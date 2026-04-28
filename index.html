@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prática de Violão & Guitarra — 90 Dias 🎸</title>
+<style>
+  :root {
+    --bg: #0f1115; --card: #1a1d24; --border: #2a2f3a;
+    --text: #e8e8e8; --muted: #8a92a3;
+    --accent: #ffb454; --accent-2: #6cb9ff; --done: #3ddc84;
+    --rose: #ff7a8a;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 24px; line-height: 1.5; }
+  header { max-width: 1200px; margin: 0 auto 16px; }
+  h1 { margin: 0 0 4px; font-size: 1.7rem; }
+  h2 { color: var(--accent); margin-top: 0; }
+  h3 { color: var(--accent); }
+  p.sub { color: var(--muted); margin: 0 0 12px; }
+  a { color: var(--accent-2); }
+
+  .tabs { max-width: 1200px; margin: 0 auto 16px; display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--border); }
+  .tab-btn { background: transparent; color: var(--muted); border: 1px solid transparent; border-bottom: none; padding: 10px 14px; cursor: pointer; font-size: 0.9rem; border-radius: 8px 8px 0 0; }
+  .tab-btn:hover { color: var(--accent); }
+  .tab-btn.active { background: var(--card); color: var(--accent); border-color: var(--border); }
+  .tab-content { display: none; max-width: 1200px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  button, .btn { background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: 0.15s; }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button.primary { background: var(--accent); color: #1a1d24; border-color: var(--accent); font-weight: 600; }
+  button.primary:hover { filter: brightness(1.1); color: #1a1d24; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+  .progress { color: var(--muted); font-size: 0.9rem; margin-bottom: 12px; }
+
+  table.songs { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; }
+  table.songs th, table.songs td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  table.songs th { background: #20242d; color: var(--accent); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  table.songs tr:last-child td { border-bottom: none; }
+  table.songs tr.done td:not(.actions) { opacity: 0.4; text-decoration: line-through; }
+  table.songs tr.section td { background: #161922; color: var(--accent-2); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.78rem; }
+  .day { font-weight: 700; color: var(--accent); width: 50px; text-align: center; }
+  .song-name { font-weight: 600; }
+  .artist { color: var(--muted); font-size: 0.88rem; }
+  .chords, .tab-spoiler { font-family: "JetBrains Mono", Consolas, monospace; color: var(--done); cursor: pointer; transition: filter 0.2s; }
+  .chords.hidden-blur, .tab-spoiler.hidden-blur { filter: blur(6px); user-select: none; }
+  .actions { width: 60px; text-align: center; }
+  .check { accent-color: var(--done); width: 18px; height: 18px; cursor: pointer; }
+
+  /* Cards (riffs / exercises) */
+  .card-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 900px) { .card-grid { grid-template-columns: 1fr 1fr; } }
+  .item-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .item-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+  .item-title { font-weight: 600; }
+  .item-meta { color: var(--muted); font-size: 0.85rem; }
+  .difficulty { color: var(--accent); }
+  .tip { color: var(--accent-2); font-size: 0.85rem; margin-top: 8px; font-style: italic; }
+  .tab-spoiler {
+    display: block; background: #0f1115; border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px; margin-top: 8px;
+    white-space: pre; overflow-x: auto; font-size: 0.85rem;
+    color: #b8e6c1; line-height: 1.4;
+  }
+
+  /* Scales */
+  .scale-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .scale-card h3 { margin: 0 0 4px; }
+  .scale-card .desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 10px; }
+  .fretboard-svg { width: 100%; max-width: 760px; height: auto; background: #0f1115; border-radius: 6px; }
+  .legend { display: flex; gap: 14px; font-size: 0.8rem; color: var(--muted); margin-top: 6px; flex-wrap: wrap; }
+  .legend-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
+  .modes-list { line-height: 1.9; }
+  .modes-list strong { color: var(--accent-2); }
+
+  /* Chord diagrams */
+  .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .chord-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px; text-align: center; }
+  .chord-svg { width: 100%; max-width: 130px; height: auto; }
+  .chord-section { margin-bottom: 24px; }
+  .chord-section h3 { margin-bottom: 10px; }
+
+  /* Routine */
+  .routine-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+  @media (min-width: 700px) { .routine-grid { grid-template-columns: repeat(2, 1fr); } }
+  .routine-item { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 12px 14px; }
+  .routine-item h4 { margin: 0 0 4px; color: var(--accent); }
+  .routine-item .time { color: var(--accent-2); font-weight: 600; font-size: 0.9rem; }
+
+  .tip-box { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 14px 18px; border-radius: 8px; margin-top: 16px; }
+  .tip-box h3 { margin: 0 0 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎸 Prática de Violão & Guitarra — 90 Dias</h1>
+  <p class="sub">Tirar músicas de ouvido + riffs + exercícios técnicos + escalas + acordes + rotina diária. Tudo num só lugar.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="songs">🎵 90 Músicas</button>
+  <button class="tab-btn" data-tab="riffs">🎸 Riffs & Solos</button>
+  <button class="tab-btn" data-tab="exercises">🎯 Exercícios</button>
+  <button class="tab-btn" data-tab="scales">🎼 Escalas</button>
+  <button class="tab-btn" data-tab="chords">📖 Acordes</button>
+  <button class="tab-btn" data-tab="routine">📅 Rotina</button>
+</nav>
+
+<section class="tab-content active" id="tab-songs">
+  <h2>90 Músicas para tirar de ouvido</h2>
+  <p class="sub">Mês 1 fácil → Mês 2 intermediário → Mês 3 avançado. Acordes <strong>borrados</strong>: tente tirar antes de revelar! Clique no acorde da linha pra ver só ela.</p>
+  <div class="progress" id="progress-songs">0 / 90 concluídas</div>
+  <div class="controls">
+    <button class="primary" id="toggle-songs">👁️ Mostrar todos os acordes</button>
+    <button id="reset-songs">🔄 Resetar progresso</button>
+  </div>
+  <table class="songs" id="songs-table"><thead>
+    <tr><th>Dia</th><th>Música</th><th>Artista</th><th>Acordes / Tom</th><th class="actions">✓</th></tr>
+  </thead><tbody></tbody></table>
+</section>
+
+<section class="tab-content" id="tab-riffs">
+  <h2>Riffs & Solos Simples</h2>
+  <p class="sub">25 riffs icônicos em ASCII tab. Tente tirar de ouvido primeiro — depois clique no tab borrado pra conferir.</p>
+  <div class="controls">
+    <button class="primary" id="toggle-riffs">👁️ Mostrar todos os tabs</button>
+    <span class="item-meta">Notação: e (mi agudo) no topo, E (mi grave) embaixo. Números = casa.</span>
+  </div>
+  <div class="card-grid" id="riffs-grid"></div>
+</section>
+
+<section class="tab-content" id="tab-exercises">
+  <h2>Exercícios Técnicos</h2>
+  <p class="sub">Drills para construir mecânica e expressão. Comece devagar com metrônomo (60 BPM) e aumente 5 BPM por dia. <strong>Qualidade &gt; velocidade.</strong></p>
+  <div class="card-grid" id="exercises-grid"></div>
+</section>
+
+<section class="tab-content" id="tab-scales">
+  <h2>Escalas — Diagramas de Braço</h2>
+  <p class="sub">Referência aberta (não estão borradas). Pratique todos os dias. <strong>Pontos laranja com "R" = tônica.</strong></p>
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#ffb454"></span>Tônica (R)</span>
+    <span><span class="legend-dot" style="background:#3ddc84"></span>Outras notas da escala</span>
+    <span><span class="legend-dot" style="background:#ff7a8a"></span>Blue note (b5)</span>
+  </div>
+  <div id="scales-container" style="margin-top:14px;"></div>
+</section>
+
+<section class="tab-content" id="tab-chords">
+  <h2>Acordes — Referência Visual</h2>
+  <p class="sub">Diagramas dos acordes mais usados. <strong>X</strong> em cima = não tocar a corda. <strong>O</strong> = corda solta. Números nos pontos = qual dedo usar (1=indicador, 2=médio, 3=anelar, 4=mínimo).</p>
+  <div id="chords-container"></div>
+</section>
+
+<section class="tab-content" id="tab-routine">
+  <h2>Rotina Diária Sugerida</h2>
+  <p class="sub">Total: ~50 minutos. Ajuste conforme seu tempo.</p>
+  <div class="routine-grid">
+    <div class="routine-item"><span class="time">5 min</span><h4>1. Aquecimento</h4>Aba "Exercícios" → cromática 1-2-3-4 nas 6 cordas. Foco em <em>relaxar a mão</em> e tocar limpo.</div>
+    <div class="routine-item"><span class="time">10 min</span><h4>2. Escala do dia</h4>Aba "Escalas". 1 escala de cada vez. Subindo e descendo com metrônomo. Comece a 60 BPM e suba 5 BPM por dia.</div>
+    <div class="routine-item"><span class="time">20 min</span><h4>3. Música do dia (de ouvido)</h4>Aba "90 Músicas". Ouça 3x sem instrumento. Ache a tônica. Teste I-V-vi-IV. Só revele os acordes no fim para conferir.</div>
+    <div class="routine-item"><span class="time">10 min</span><h4>4. Riff / Solo</h4>Aba "Riffs". Repita até sair limpo, sem olhar o tab.</div>
+    <div class="routine-item"><span class="time">5 min</span><h4>5. Improviso livre</h4>Procure no YouTube "<em>backing track Am blues</em>" ou "<em>E minor pentatonic backing</em>". Improvise com a pentatônica menor. Erre à vontade.</div>
+    <div class="routine-item" style="border-left-color:var(--accent-2)"><span class="time">Bônus semanal</span><h4>Sábado/Domingo</h4>Grave em vídeo uma das músicas que você "fechou" na semana. Assista depois — você vai notar coisas que sua orelha não pegou tocando.</div>
+  </div>
+
+  <div class="tip-box">
+    <h3>🎧 Os 5 passos para tirar de ouvido</h3>
+    <ol>
+      <li><strong>Ouça 3x</strong> sem instrumento. Cante a melodia.</li>
+      <li><strong>Ache a tônica</strong> — a nota onde a música "descansa".</li>
+      <li><strong>Teste I-V-vi-IV</strong> no tom encontrado. Resolve ~70% das pop.</li>
+      <li><strong>Loop curto</strong> (8-15s) nas partes difíceis. Use 0.75x no YouTube/Spotify.</li>
+      <li><strong>Confira no <a href="https://www.cifraclub.com.br" target="_blank">cifraclub</a></strong> só no fim.</li>
+    </ol>
+  </div>
+</section>
+
+<script>
+// ============ DATA: SONGS ============
+const songs = [
+  {section: "Mês 1 · Semana 1 — Fundamentos (3-4 acordes)"},
+  {d:1, n:"Knockin' on Heaven's Door", a:"Bob Dylan", c:"G – D – Am – C  /  G – D – C"},
+  {d:2, n:"Three Little Birds", a:"Bob Marley", c:"A – D – E"},
+  {d:3, n:"Love Me Do", a:"The Beatles", c:"G – C – D"},
+  {d:4, n:"Horse with No Name", a:"America", c:"Em – D6/9  (só 2 acordes)"},
+  {d:5, n:"Wonderful Tonight", a:"Eric Clapton", c:"G – D/F# – Em – C – D"},
+  {d:6, n:"Wagon Wheel", a:"Old Crow Medicine Show", c:"G – D – Em – C"},
+  {d:7, n:"Imagine", a:"John Lennon", c:"C – Cmaj7 – F  /  Am – Dm – F – G"},
+  {section: "Mês 1 · Semana 2 — Fórmula pop I-V-vi-IV"},
+  {d:8, n:"Let It Be", a:"The Beatles", c:"C – G – Am – F"},
+  {d:9, n:"No Woman No Cry", a:"Bob Marley", c:"C – G – Am – F"},
+  {d:10, n:"With or Without You", a:"U2", c:"D – A – Bm – G"},
+  {d:11, n:"Someone Like You", a:"Adele", c:"A – C#m – F#m – D  (capo 2: G Bm Em C)"},
+  {d:12, n:"I'm Yours", a:"Jason Mraz", c:"B – F# – G#m – E  (capo 4: G D Em C)"},
+  {d:13, n:"Perfect", a:"Ed Sheeran", c:"G – Em – C – D  (capo 1)"},
+  {d:14, n:"Stand by Me", a:"Ben E. King", c:"A – F#m – D – E"},
+  {section: "Mês 1 · Semana 3 — Brasileiras"},
+  {d:15, n:"Trem-Bala", a:"Ana Vilela", c:"G – D/F# – Em – C"},
+  {d:16, n:"Tempo Perdido", a:"Legião Urbana", c:"D – A – Bm – G"},
+  {d:17, n:"Pais e Filhos", a:"Legião Urbana", c:"G – D – Em – C – Am"},
+  {d:18, n:"Eduardo e Mônica", a:"Legião Urbana", c:"D – G – A – Bm"},
+  {d:19, n:"Anna Júlia", a:"Los Hermanos", c:"G – D – Em – C"},
+  {d:20, n:"Lanterna dos Afogados", a:"Paralamas do Sucesso", c:"G – Em – C – D"},
+  {d:21, n:"Sozinho", a:"Caetano / Peninha", c:"G – D/F# – Em – C – Am – D"},
+  {section: "Mês 1 · Semana 4 — Pestana, dedilhado, harmonia"},
+  {d:22, n:"Hallelujah", a:"Cohen / Buckley", c:"C – Am – F – G – E – Am"},
+  {d:23, n:"Tears in Heaven", a:"Eric Clapton", c:"A – E/G# – F#m – F#m/E – D – E – A"},
+  {d:24, n:"Wish You Were Here", a:"Pink Floyd", c:"Em7 – G – Em7 – A7sus4 – G – C – D – Am – G"},
+  {d:25, n:"Hotel California", a:"Eagles", c:"Bm – F# – A – E – G – D – Em – F#  (capo 7)"},
+  {d:26, n:"Nothing Else Matters (intro)", a:"Metallica", c:"Em – D – C  (arpejado)"},
+  {d:27, n:"Blackbird", a:"The Beatles", c:"G – Am7 – G/B – C – C#dim – D – D#dim – Em"},
+  {d:28, n:"Garota de Ipanema", a:"Tom Jobim", c:"F7M – G7 – Gm7 – F7M  /  Gb7M – B7 – F#m7 – D7"},
+  {d:29, n:"Wave", a:"Tom Jobim", c:"D7M – B7(b9) – Bm7 – E9"},
+  {d:30, n:"Mas Que Nada", a:"Jorge Ben", c:"Am6 – B7 – E7 – Am6"},
+
+  {section: "Mês 2 · Semana 5 — Variações de ritmo e dedilhado"},
+  {d:31, n:"Time of Your Life", a:"Green Day", c:"G – Cadd9 – D – Em7"},
+  {d:32, n:"Free Fallin'", a:"Tom Petty", c:"D – Dsus4 – A – Asus4  (capo 3)"},
+  {d:33, n:"Patience (intro)", a:"Guns N' Roses", c:"C – G – A – D"},
+  {d:34, n:"Yellow", a:"Coldplay", c:"B – Bsus4 – F#11 – Eadd9  (capo 4: G Gsus4 D C)"},
+  {d:35, n:"The Scientist", a:"Coldplay", c:"Dm – Bb – F – Fsus4"},
+  {d:36, n:"Viva La Vida", a:"Coldplay", c:"C – D – G – Em"},
+  {d:37, n:"Zombie", a:"The Cranberries", c:"Em – C – G – D"},
+  {section: "Mês 2 · Semana 6 — Pop / Indie / Rock alternativo"},
+  {d:38, n:"Mad World", a:"Gary Jules", c:"Em – A – Em – G – D"},
+  {d:39, n:"Boulevard of Broken Dreams", a:"Green Day", c:"Fm – Ab – Eb – Bb"},
+  {d:40, n:"Black (intro)", a:"Pearl Jam", c:"E – A  (alterna fingerstyle)"},
+  {d:41, n:"Sweet Child O' Mine (intro)", a:"Guns N' Roses", c:"D – C – G – D"},
+  {d:42, n:"Wonderwall", a:"Oasis", c:"Em7 – G – Dsus4 – A7sus4  (capo 2)"},
+  {d:43, n:"Smells Like Teen Spirit", a:"Nirvana", c:"F5 – Bb5 – Ab5 – Db5"},
+  {d:44, n:"Come As You Are", a:"Nirvana", c:"Em – G  + riff em Eb tuning"},
+  {section: "Mês 2 · Semana 7 — Country / Folk / Anos 70"},
+  {d:45, n:"Sweet Home Alabama", a:"Lynyrd Skynyrd", c:"D – C – G"},
+  {d:46, n:"Take It Easy", a:"Eagles", c:"G – D – C"},
+  {d:47, n:"Country Roads", a:"John Denver", c:"G – D – Em – C"},
+  {d:48, n:"House of the Rising Sun", a:"The Animals", c:"Am – C – D – F – Am – E"},
+  {d:49, n:"Hey Jude", a:"The Beatles", c:"F – C – Bb – F  /  F – Eb – Bb – F"},
+  {d:50, n:"Yesterday", a:"The Beatles", c:"F – Em – A – Dm – Bb – C  (capo 5)"},
+  {d:51, n:"Here Comes the Sun", a:"The Beatles", c:"D – G – A  (capo 7)"},
+  {section: "Mês 2 · Semana 8 — MPB / Brasileiras avançadas"},
+  {d:52, n:"Por Enquanto", a:"Cássia Eller / Legião", c:"C – Am – F – G"},
+  {d:53, n:"Ovelha Negra", a:"Rita Lee", c:"D – A – E"},
+  {d:54, n:"Codinome Beija-Flor", a:"Cazuza", c:"G – D – Em – C  (com baixo D/F#)"},
+  {d:55, n:"Maluco Beleza", a:"Raul Seixas", c:"D – G – A"},
+  {d:56, n:"O Mundo é um Moinho", a:"Cartola", c:"Am – Dm – G – C – F  (com 7M e 9)"},
+  {d:57, n:"Aquarela", a:"Toquinho", c:"C – Em – F – G – Am – D7 – G7"},
+  {d:58, n:"Como Nossos Pais", a:"Belchior / Elis", c:"G – Em – C – D – Am"},
+  {d:59, n:"Sampa", a:"Caetano Veloso", c:"C – Am – Dm – G  (com 7M)"},
+  {d:60, n:"Eu Sei Que Vou Te Amar", a:"Tom Jobim", c:"Cm7 – F7 – Bbm7 – Eb7 – Abmaj7"},
+
+  {section: "Mês 3 · Semana 9 — Rock progressivo"},
+  {d:61, n:"Comfortably Numb (intro)", a:"Pink Floyd", c:"Bm – A – G – Em – Bm  /  D – A – C – G"},
+  {d:62, n:"Money", a:"Pink Floyd", c:"Bm – F# – Em – Bm  (compasso 7/4!)"},
+  {d:63, n:"Stairway to Heaven (completa)", a:"Led Zeppelin", c:"Am – C/G – D/F# – Fmaj7 – G – Am  /  C – D – F – Am"},
+  {d:64, n:"Black Magic Woman", a:"Santana", c:"Dm – Am – Gm – Dm – Bb – A7"},
+  {d:65, n:"Europa (intro)", a:"Santana", c:"Em – Am – D – G – Cmaj7 – F#m7b5 – B7"},
+  {d:66, n:"Layla (unplugged)", a:"Eric Clapton", c:"D – Bm – Em – A – D"},
+  {d:67, n:"Sultans of Swing", a:"Dire Straits", c:"Dm – C – Bb – A – F – C – Bb"},
+  {section: "Mês 3 · Semana 10 — Blues / Hendrix"},
+  {d:68, n:"Money for Nothing (riff)", a:"Dire Straits", c:"G5 – F5 – Bb5 – C5 – G5  (drop D opcional)"},
+  {d:69, n:"Sunshine of Your Love", a:"Cream", c:"D – C – G – A"},
+  {d:70, n:"Hey Joe", a:"Jimi Hendrix", c:"C – G – D – A – E"},
+  {d:71, n:"Little Wing", a:"Jimi Hendrix", c:"Em – G – Am – Em – Bm – Am – C – G"},
+  {d:72, n:"Pride and Joy", a:"SRV", c:"E7 – A7 – B7  (12-bar shuffle em Mi)"},
+  {d:73, n:"Crossroads", a:"Cream / Robert Johnson", c:"A7 – D7 – E7  (12-bar em Lá, rápido)"},
+  {d:74, n:"Gimme Shelter (intro)", a:"Rolling Stones", c:"C# – B – G#m  (capo 4: A G Em)"},
+  {section: "Mês 3 · Semana 11 — Brasileiras avançadas / Instrumental"},
+  {d:75, n:"Paint It Black", a:"Rolling Stones", c:"Em – B7 – Em – D – G – A – C – B7"},
+  {d:76, n:"While My Guitar Gently Weeps", a:"The Beatles", c:"Am – Am/G – D9/F# – F  /  Am – G – C – E"},
+  {d:77, n:"Faroeste Caboclo", a:"Legião Urbana", c:"F – C – G – Am  (treino de letra + troca rápida)"},
+  {d:78, n:"Asa Branca (instrumental)", a:"Luiz Gonzaga", c:"D – A – G – D"},
+  {d:79, n:"Garota Nacional", a:"Skank", c:"E – B – C#m – A"},
+  {d:80, n:"Trenzinho Caipira", a:"Villa-Lobos", c:"melodia + acompanhamento"},
+  {d:81, n:"Asturias (intro)", a:"Albéniz", c:"Em – F – Em  (arpejos rápidos)"},
+  {section: "Mês 3 · Semana 12 — Jazz / Standards / Final"},
+  {d:82, n:"Blue Bossa", a:"Kenny Dorham", c:"Cm7 – Fm7 – Dm7b5 – G7 – Cm7  /  Ebm7 – Ab7 – Dbmaj7"},
+  {d:83, n:"Autumn Leaves", a:"jazz standard", c:"Am7 – D7 – Gmaj7 – Cmaj7 – F#m7b5 – B7 – Em"},
+  {d:84, n:"Caravan", a:"Duke Ellington", c:"Dm – Eb7 – D7 – Dm  (latin jazz)"},
+  {d:85, n:"Take Five", a:"Dave Brubeck", c:"Ebm – Bbm7  (compasso 5/4!)"},
+  {d:86, n:"Every Breath You Take", a:"The Police", c:"G – Em – C – D – Am – Bm – Em7"},
+  {d:87, n:"Roxanne", a:"The Police", c:"Gm – F – Eb – Dm – Eb – Dm – Cm"},
+  {d:88, n:"Wish You Were Here (solo completo)", a:"Pink Floyd", c:"Em pent + bends + slides"},
+  {d:89, n:"Hotel California (solo final)", a:"Eagles", c:"Bm pent + harmonia em terças"},
+  {d:90, n:"12-Bar Blues em Lá — Improviso", a:"Você!", c:"A7 – D7 – E7  (improvise com pentatônica menor de A na 5ª casa)"}
+];
+
+// ============ DATA: RIFFS ============
+const riffs = [
+  {t:"Smoke on the Water", a:"Deep Purple", diff:1, tab:
+`G|--0--3--5----0--3--6--5----0--3--5--3--0----|
+D|--0--3--5----0--3--6--5----0--3--5--3--0----|`},
+  {t:"Iron Man", a:"Black Sabbath", diff:1, tab:
+`G|------------------7----7-----------|
+D|--7--7---10/12---5----5--7-7-------|
+A|--5--5----8/10---------------------|`},
+  {t:"Paranoid", a:"Black Sabbath", diff:1, tab:
+`e|--12-12-10-12--------12-10-12-----|
+B|---------------------------------|`},
+  {t:"Back in Black", a:"AC/DC", diff:2, tab:
+`e|----------------------------------------|
+B|----------------------------------------|
+G|--7-----5--------5--7-----5--7-----5----|
+D|--7-----5--------5--7-----5--7-----5----|
+A|--5-----3--------3--5-----3--5-----3----|`},
+  {t:"Highway to Hell", a:"AC/DC", diff:2, tab:
+`Power chords abertos: A5 — D5/F# — G5 — D5/F# — G5 — A5
+e|------------------------|
+B|--2-----3----------3----|
+G|--2-----2----------2----|
+D|--2-----0----0-----0----|
+A|--0----------------5----|
+E|---------2----3---------|`},
+  {t:"Sunshine of Your Love (riff)", a:"Cream", diff:2, tab:
+`e|------------------|
+B|------------------|
+G|--7--5--3--2-0--3-|
+D|------------------|`},
+  {t:"Day Tripper", a:"The Beatles", diff:2, tab:
+`e|---------------------|
+B|---------------------|
+G|---------------4-----|
+D|------------4--------|
+A|------4--7-----------|
+E|--0-2----------------|`},
+  {t:"Smells Like Teen Spirit", a:"Nirvana", diff:2, tab:
+`Power chords:  F5 - Bb5 - Ab5 - Db5
+G|--3-----|--3-----|--6-----|--6-----|
+D|--3-----|--3-----|--6-----|--6-----|
+A|--3-----|--1-----|--6-----|--4-----|
+E|--1-----|--------|--4-----|--------|`},
+  {t:"Come As You Are", a:"Nirvana", diff:1, tab:
+`(Eb tuning ou padrão)
+D|--2--0----0----2--3--2--0-----|`},
+  {t:"Black (intro)", a:"Pearl Jam", diff:2, tab:
+`e|----0------0------0------0----|
+B|----0------0------2------2----|
+G|----1------1------2------2----|
+D|----2------2------2------2----|
+A|----2------2------0------0----|
+E|----0------0------------------|
+   (E)    (E)    (A7)   (A7)`},
+  {t:"Zombie (arpejos)", a:"The Cranberries", diff:1, tab:
+`Em - C - G - D
+e|-----0-----0-----3-----2--|
+B|-----0-----1-----3-----3--|
+G|--0-----0-----0-----2-----|`},
+  {t:"Seven Nation Army", a:"The White Stripes", diff:1, tab:
+`(Linha do baixo na 5ª corda)
+A|--7--7--10--7--5--3--2--|`},
+  {t:"Wonderwall (intro)", a:"Oasis", diff:2, tab:
+`(Capo 2)
+e|-----3----3----3----3----|
+B|-----3----3----3----3----|
+G|-----0----2----0----2----|
+D|-----2----0----0----0----|
+A|-----3---------2---------|
+E|-----------------3-------|
+   (Em7)  (G)  (D)  (A7sus4)`},
+  {t:"Boulevard of Broken Dreams", a:"Green Day", diff:1, tab:
+`Power chords: Fm5 - Ab5 - Eb5 - Bb5
+G|--6------|--6------|--3------|--3------|
+D|--6------|--6------|--3------|--3------|
+A|--4------|---------|--1------|--1------|
+E|---------|--4------|---------|---------|`},
+  {t:"Enter Sandman", a:"Metallica", diff:2, tab:
+`E|--0-----------0-----------|
+A|----0-2-3-0-2-3-2-0-------|
+E|--0----------0------3-2-0-|`},
+  {t:"Nothing Else Matters (intro)", a:"Metallica", diff:2, tab:
+`(Em arpejado, dedilhado p-i-m-a)
+e|----0----------0----------0------|
+B|------0----------0----------0----|
+G|--------0----------0----------0--|
+D|--9-----------7----------5-------|
+A|--7-----------5----------3-------|
+E|--0----------------------0-------|
+   (Em)         (D)         (C)`},
+  {t:"For Whom the Bell Tolls (riff)", a:"Metallica", diff:2, tab:
+`Power chords E5 e Bb5
+D|--9------9------9-9-9------|
+A|--9------9------9-9-9-7-7--|
+E|--7------7------7-7-7------|`},
+  {t:"12-Bar Blues em Lá", a:"tradicional", diff:1, tab:
+`Shuffle pattern em cada acorde, 4 compassos cada
+A7: A|-0--2--4--2-|  D7: A|-0--2--4--2-|  E7: B|-0--2--4--2-|
+    E|-0--0--0--0-|      D|-0--0--0--0-|      A|-0--0--0--0-|
+
+A7-A7-A7-A7 / D7-D7-A7-A7 / E7-D7-A7-E7`},
+  {t:"Pride and Joy (intro)", a:"Stevie Ray Vaughan", diff:3, tab:
+`e|--------------------5-----|
+B|------5---5-7-5-7-8------|
+G|--7-7---7-----------------|
+E|--0-----0-----------------|`},
+  {t:"BB King — Lucille turnaround", a:"BB King style", diff:2, tab:
+`e|-----------------------|
+B|--8-8b10-8-7--5--------|
+G|--------------7-9~-----|`},
+  {t:"Tempo Perdido (intro)", a:"Legião Urbana", diff:1, tab:
+`(D - A - Bm - G com batida característica)
+e|-2--2-|-0--0-|-2--2-|-3--3-|
+B|-3--3-|-2--2-|-3--3-|-3--3-|
+G|-2--2-|-2--2-|-4--4-|-0--0-|
+D|-0--0-|-2--2-|-4--4-|-0--0-|
+A|------|-0--0-|-2--2-|-2--2-|
+E|------|------|------|-3--3-|`},
+  {t:"Eduardo e Mônica (intro)", a:"Legião Urbana", diff:1, tab:
+`Acordes D - A - G - Bm com batida.
+Estude o ritmo característico da banda.`},
+  {t:"Garota Nacional (riff)", a:"Skank", diff:2, tab:
+`G|--6--4--2-----6--4--2-----|
+D|------------4---------4---|`},
+  {t:"Ovelha Negra (intro)", a:"Rita Lee", diff:1, tab:
+`(D - A - E em rock simples, batida down-down-up-down)
+Ritmo é mais importante que as notas`},
+  {t:"Codinome Beija-Flor (intro)", a:"Cazuza", diff:2, tab:
+`e|-3-----3----3-----3---|
+B|-3-----3----3-----3---|
+G|-0-----2----0-----2---|
+D|-0-----0----0-----0---|
+A|-2-----0----0-----0---|
+E|-3----------2---------|
+  (G)  (D/F#)(Em)  (D)`}
+];
+
+// ============ DATA: EXERCISES ============
+const exercises = [
+  {t:"Cromática 1-2-3-4 (ascendente)", cat:"Aquecimento", diff:1,
+    desc:"Toque os 4 primeiros trastes em cada corda, do mi grave ao mi agudo. Use 1 dedo por traste.",
+    tab:`E|--1--2--3--4--|
+A|--1--2--3--4--|
+D|--1--2--3--4--|
+G|--1--2--3--4--|
+B|--1--2--3--4--|
+e|--1--2--3--4--|`,
+    tip:"Comece a 60 BPM com metrônomo. Foco: cada nota com volume igual e tempo certo. Velocidade vem depois."
+  },
+  {t:"Cromática descendente 4-3-2-1", cat:"Aquecimento", diff:1,
+    desc:"O inverso. Trabalha a articulação dos dedos 4 (mínimo) e 3 (anelar) — os mais fracos.",
+    tab:`e|--4--3--2--1--|
+B|--4--3--2--1--|
+G|--4--3--2--1--|
+D|--4--3--2--1--|
+A|--4--3--2--1--|
+E|--4--3--2--1--|`,
+    tip:"O 'levantar' do dedo é tão importante quanto o 'pisar'. Não deixe os dedos preguiçosos."
+  },
+  {t:"Spider 1-3-2-4", cat:"Aquecimento", diff:2,
+    desc:"Padrão 'aranha'. Quebra a sequência cromática e desafia coordenação.",
+    tab:`E|--1--3--2--4--|
+A|--1--3--2--4--|
+D|--1--3--2--4--|
+G|--1--3--2--4--|
+B|--1--3--2--4--|
+e|--1--3--2--4--|`,
+    tip:"Quando esse sair limpo, tente: 1-4-2-3, 2-1-4-3, 3-1-4-2. Cada permutação treina algo diferente."
+  },
+  {t:"Alternate picking — corda única", cat:"Mão direita", diff:2,
+    desc:"Palhetadas alternadas (↓ ↑ ↓ ↑) na 1ª corda solta. A base de toda velocidade.",
+    tab:`e|--0--0--0--0--0--0--0--0--|
+   ↓  ↑  ↓  ↑  ↓  ↑  ↓  ↑`,
+    tip:"Comece a 80 BPM em colcheias. A palheta deve mal sair da corda — economia de movimento."
+  },
+  {t:"String crossing (2 cordas)", cat:"Mão direita", diff:2,
+    desc:"Alternate picking trocando entre duas cordas adjacentes.",
+    tab:`e|--0-----0-----0-----0--|
+B|-----0-----0-----0-----|
+   ↓  ↑  ↓  ↑  ↓  ↑  ↓  ↑`,
+    tip:"O salto entre cordas é o vilão. Mantenha a palheta perto das cordas e deixe o pulso fazer o trabalho."
+  },
+  {t:"String skipping", cat:"Mão direita", diff:3,
+    desc:"Pular uma corda no meio. Treina precisão e amplia o vocabulário melódico.",
+    tab:`e|--0-----0-----0-----0--|
+G|-----0-----0-----0-----|`,
+    tip:"Mais difícil do que parece. Comece a 60 BPM. Se errar, slow down."
+  },
+  {t:"Hammer-on simples", cat:"Articulação", diff:1,
+    desc:"Toque a nota com palheta, depois 'martele' o próximo dedo na próxima nota — sem palhetar.",
+    tab:`e|--5h7--5h7--5h7--5h7--|
+   (palheta no 5, martelo no 7)`,
+    tip:"O som da segunda nota tem que sair igual à primeira. Se sair fraco = força do dedo precisa melhorar."
+  },
+  {t:"Pull-off simples", cat:"Articulação", diff:1,
+    desc:"Inverso do hammer. Toque com palheta + 2 dedos no traste, 'puxe' o dedo de cima de lado.",
+    tab:`e|--7p5--7p5--7p5--7p5--|
+   (palheta no 7, puxa dedo soltando no 5)`,
+    tip:"Não levante o dedo, PUXE para baixo. É um movimento de pinçar a corda."
+  },
+  {t:"Trinado contínuo", cat:"Articulação", diff:2,
+    desc:"Hammer + pull-off em loop. Treina resistência da mão esquerda.",
+    tab:`e|--5h7p5h7p5h7p5h7p5--|
+   (uma palhetada, o resto é articulação)`,
+    tip:"Faça por 30 segundos sem parar. Se o som morrer, mais força nos dedos. Cuidado para não tensionar o braço."
+  },
+  {t:"Bend de meio tom", cat:"Expressão", diff:2,
+    desc:"Empurre a corda para cima até a nota subir 1 traste. Exemplo: 7 → som de 8.",
+    tab:`e|--7b(8)--7b(8)--7b(8)--|
+   (puxe a corda até soar como o traste 8)`,
+    tip:"Use 3 dedos juntos (1+2+3) para força. Compare: toque 8 sem bend, depois faça o bend e veja se chegou na mesma nota."
+  },
+  {t:"Bend de 1 tom", cat:"Expressão", diff:3,
+    desc:"Empurre até subir 2 trastes. Exemplo: 7 → som de 9. O bend mais usado em rock/blues.",
+    tab:`e|--7b(9)--7b(9)--7b(9)--|`,
+    tip:"Cordas .009 são as mais fáceis para bend. Em violão de aço .012+, o bend é bem mais difícil — vibrato é alternativa."
+  },
+  {t:"Vibrato lento", cat:"Expressão", diff:2,
+    desc:"Mini-bends rápidos repetidos. Dá 'vida' à nota sustentada.",
+    tab:`e|--7~~~~~--   (vibrato)
+   (oscile a corda 1-2 vezes por segundo)`,
+    tip:"Existe vibrato 'BB King' (movimento rápido do dedo) e 'Clapton/Gilmour' (movimento de pulso). Pratique os dois."
+  },
+  {t:"Slide ascendente", cat:"Expressão", diff:1,
+    desc:"Toque uma nota e deslize o dedo para outro traste sem soltar a corda.",
+    tab:`e|--5/9--5/9--5/9--|
+   (toque 5, deslize até 9)`,
+    tip:"Pressão constante na corda durante o slide. Se sair mudo, está soltando muito."
+  },
+  {t:"Pestana — F maior (transição C → F)", cat:"Pestana", diff:3,
+    desc:"O acorde que separa iniciantes de intermediários. Indicador deita sobre as 6 cordas no traste 1.",
+    tab:`F:  e|-1-|
+    B|-1-|
+    G|-2-|
+    D|-3-|
+    A|-3-|
+    E|-1-|
+
+Treino: C - F - C - F (4 batidas cada, 60 BPM)`,
+    tip:"Polegar atrás do braço, indicador rolado de lado (não chapado). Se uma corda chia, ajuste o ângulo do dedo."
+  },
+  {t:"Pestana móvel — Bb maior", cat:"Pestana", diff:3,
+    desc:"Mesma forma do F, deslocada para a 1ª casa virando A no traste 1 → Bb no traste 2 (forma de A).",
+    tab:`Bb (forma de A no 1º traste, pestana):
+    e|-1-|
+    B|-3-|
+    G|-3-|
+    D|-3-|
+    A|-1-|`,
+    tip:"Forma A é mais difícil que forma E — 3 dedos pisando o mesmo traste. Pode usar o anelar deitado para D-G-B."
+  },
+  {t:"Power chords — E5/A5/D5", cat:"Acordes", diff:1,
+    desc:"Acordes 'palitos' do rock. 2 ou 3 notas, sem terça (nem maior nem menor — neutros).",
+    tab:`E5:  D|--2--    A5:  G|--2--    D5:  B|--3--
+     A|--2--         D|--2--         G|--2--
+     E|--0--         A|--0--         D|--0--
+
+Transição: E5 → A5 → D5 → A5 (4 batidas cada)`,
+    tip:"Abafe as cordas que não tocar com a borda do indicador. Sem isso o som fica sujo."
+  },
+  {t:"I-V-vi-IV em Sol (G - D - Em - C)", cat:"Acordes", diff:1,
+    desc:"A progressão pop mais usada do mundo. Decore essa transição — você toca centenas de músicas com ela.",
+    tab:`G:  e|-3-|   D:  e|-2-|   Em:  e|-0-|   C:  e|-0-|
+    B|-3-|       B|-3-|        B|-0-|        B|-1-|
+    G|-0-|       G|-2-|        G|-0-|        G|-0-|
+    D|-0-|       D|-0-|        D|-2-|        D|-2-|
+    A|-2-|       A|-x-|        A|-2-|        A|-3-|
+    E|-3-|       E|-x-|        E|-0-|        E|-x-|
+
+Treino: G - D - Em - C (4 batidas cada, 60 BPM)`,
+    tip:"Quando estiver fluido, tente o D/F# no lugar do D (baixo F# no traste 2 da 6ª corda) — fica mais 'moderno'."
+  },
+  {t:"Arpejo Am — pentatônica menor", cat:"Improviso", diff:2,
+    desc:"Tocar a pentatônica menor de Lá uma nota por vez, ascendendo e descendendo. Base de toda improvisação.",
+    tab:`E|--5--8--|
+A|--5--7--|
+D|--5--7--|
+G|--5--7--|
+B|--5--8--|
+e|--5--8--|
+
+Volte: e|--8--5-- ... E|--8--5--`,
+    tip:"Foco em sair limpo, com palhetadas alternadas. Quando dominar, comece a improvisar saindo da ordem."
+  }
+];
+
+// ============ DATA: SCALES ============
+const scales = [
+  { title:"Pentatônica Menor — Posição 1 (Lá menor, 5ª casa)",
+    desc:"A 'caixa' mais usada no rock e blues. Tônica em Lá na 6ª corda casa 5. Notas: A C D E G.",
+    fretRange:[4,9],
+    dots:[
+      {s:6,f:5,root:true},{s:6,f:8},
+      {s:5,f:5},{s:5,f:7},
+      {s:4,f:5},{s:4,f:7,root:true},
+      {s:3,f:5},{s:3,f:7},
+      {s:2,f:5},{s:2,f:8},
+      {s:1,f:5,root:true},{s:1,f:8}
+    ]
+  },
+  { title:"Pentatônica Menor — Posição 2 (Lá menor, 8ª casa)",
+    desc:"Conectada à posição 1, sobe pelo braço. Útil pra improvisar nas regiões mais agudas.",
+    fretRange:[7,11],
+    dots:[
+      {s:6,f:8},{s:6,f:10},
+      {s:5,f:7},{s:5,f:10},
+      {s:4,f:7,root:true},{s:4,f:9},
+      {s:3,f:7},{s:3,f:9},
+      {s:2,f:8},{s:2,f:10,root:true},
+      {s:1,f:8},{s:1,f:10}
+    ]
+  },
+  { title:"Pentatônica Maior — Posição 1 (Dó maior, 8ª casa)",
+    desc:"Mesma forma da menor, deslocada. C maior pent: C D E G A. Use sobre acordes maiores.",
+    fretRange:[7,12],
+    dots:[
+      {s:6,f:8,root:true},{s:6,f:10},
+      {s:5,f:7},{s:5,f:10},
+      {s:4,f:7},{s:4,f:9},
+      {s:3,f:7},{s:3,f:9},
+      {s:2,f:8},{s:2,f:10},
+      {s:1,f:8,root:true},{s:1,f:10}
+    ]
+  },
+  { title:"Escala de Blues — Lá menor (5ª casa)",
+    desc:"Pentatônica menor + 'blue note' (b5). Notas: A C D Eb E G. A b5 é a 'magia' do blues.",
+    fretRange:[4,9],
+    dots:[
+      {s:6,f:5,root:true},{s:6,f:8},
+      {s:5,f:5},{s:5,f:6,blue:true},{s:5,f:7},
+      {s:4,f:5},{s:4,f:7,root:true},
+      {s:3,f:5},{s:3,f:7},{s:3,f:8,blue:true},
+      {s:2,f:5},{s:2,f:8},
+      {s:1,f:5,root:true},{s:1,f:8}
+    ]
+  },
+  { title:"Escala Maior (Jônica) — Sol maior, posição aberta",
+    desc:"G A B C D E F# G. A escala mãe da música ocidental.",
+    fretRange:[0,5],
+    dots:[
+      {s:6,f:0},{s:6,f:2},{s:6,f:3,root:true},
+      {s:5,f:0},{s:5,f:2},{s:5,f:3},
+      {s:4,f:0,root:true},{s:4,f:2},{s:4,f:4},
+      {s:3,f:0},{s:3,f:2},
+      {s:2,f:0},{s:2,f:1},{s:2,f:3},
+      {s:1,f:0},{s:1,f:2},{s:1,f:3,root:true}
+    ]
+  },
+  { title:"Escala Menor Natural (Eólia) — Lá menor, posição aberta",
+    desc:"A B C D E F G A. As 'teclas brancas' do piano de Lá a Lá. Som triste/melancólico.",
+    fretRange:[0,5],
+    dots:[
+      {s:6,f:0},{s:6,f:1},{s:6,f:3},
+      {s:5,f:0,root:true},{s:5,f:2},{s:5,f:3},
+      {s:4,f:0},{s:4,f:2},{s:4,f:3},
+      {s:3,f:0},{s:3,f:2},
+      {s:2,f:0},{s:2,f:1},{s:2,f:3},
+      {s:1,f:0},{s:1,f:1},{s:1,f:3}
+    ]
+  }
+];
+
+const modesText = `
+<div class="modes-list">
+  <strong>I — Jônio</strong> (maior natural): C D E F G A B — alegre, resolutivo. Pop, country.<br>
+  <strong>II — Dórico</strong>: D E F G A B C — menor com 6ª maior. "Menor jazz/funk", Santana.<br>
+  <strong>III — Frígio</strong>: E F G A B C D — escuro, espanhol/flamenco/metal.<br>
+  <strong>IV — Lídio</strong>: F G A B C D E — maior com #4. Sonhador, Steve Vai, trilhas.<br>
+  <strong>V — Mixolídio</strong>: G A B C D E F — maior com b7. Blues, rock, "Sweet Child O' Mine".<br>
+  <strong>VI — Eólio</strong> (menor natural): A B C D E F G — triste. Rock, baladas.<br>
+  <strong>VII — Lócrio</strong>: B C D E F G A — instável. Raramente tônico.
+</div>
+<p style="color:var(--muted); margin-top:12px; font-size:0.9rem;">
+  💡 Truque: todos os 7 modos acima usam <strong>as mesmas notas</strong>. O que muda é qual nota você considera "casa". Toque a escala de Sol maior começando em diferentes notas — você sente cada modo.
+</p>
+`;
+
+// ============ DATA: CHORDS ============
+// dots: {s:1-6 (1=high E), f:1-5 (relative to baseFret), finger:1-4}
+// muted: array of strings to mark with X
+// open: array of strings to mark with O (auto-derived if not specified)
+const chordCategories = [
+  { title:"Acordes Maiores Abertos", chords:[
+    {name:"C",   dots:[{s:5,f:3,finger:3},{s:4,f:2,finger:2},{s:2,f:1,finger:1}], muted:[6]},
+    {name:"D",   dots:[{s:3,f:2,finger:1},{s:1,f:2,finger:2},{s:2,f:3,finger:3}], muted:[5,6]},
+    {name:"E",   dots:[{s:5,f:2,finger:2},{s:4,f:2,finger:3},{s:3,f:1,finger:1}]},
+    {name:"G",   dots:[{s:6,f:3,finger:2},{s:5,f:2,finger:1},{s:1,f:3,finger:3}]},
+    {name:"A",   dots:[{s:4,f:2,finger:1},{s:3,f:2,finger:2},{s:2,f:2,finger:3}], muted:[6]},
+  ]},
+  { title:"Acordes Menores Abertos", chords:[
+    {name:"Em",  dots:[{s:5,f:2,finger:2},{s:4,f:2,finger:3}]},
+    {name:"Am",  dots:[{s:4,f:2,finger:2},{s:3,f:2,finger:3},{s:2,f:1,finger:1}], muted:[6]},
+    {name:"Dm",  dots:[{s:3,f:2,finger:2},{s:1,f:1,finger:1},{s:2,f:3,finger:3}], muted:[5,6]},
+  ]},
+  { title:"Acordes com Sétima (7)", chords:[
+    {name:"G7",  dots:[{s:6,f:3,finger:3},{s:5,f:2,finger:2},{s:1,f:1,finger:1}]},
+    {name:"C7",  dots:[{s:5,f:3,finger:3},{s:4,f:2,finger:2},{s:3,f:3,finger:4},{s:2,f:1,finger:1}], muted:[6]},
+    {name:"D7",  dots:[{s:3,f:2,finger:2},{s:2,f:1,finger:1},{s:1,f:2,finger:3}], muted:[5,6]},
+    {name:"A7",  dots:[{s:4,f:2,finger:2},{s:2,f:2,finger:3}], muted:[6]},
+    {name:"E7",  dots:[{s:5,f:2,finger:2},{s:3,f:1,finger:1}]},
+    {name:"B7",  dots:[{s:5,f:2,finger:2},{s:4,f:1,finger:1},{s:3,f:2,finger:3},{s:1,f:2,finger:4}], muted:[6]},
+  ]},
+  { title:"Acordes com Sétima Maior (7M / maj7)", chords:[
+    {name:"Cmaj7", dots:[{s:5,f:3,finger:3},{s:4,f:2,finger:2},{s:2,f:1,finger:1}], muted:[6]},
+    {name:"Dmaj7", dots:[{s:3,f:2,finger:1},{s:2,f:2,finger:2},{s:1,f:2,finger:3}], muted:[5,6]},
+    {name:"Fmaj7", dots:[{s:4,f:3,finger:3},{s:3,f:2,finger:2},{s:2,f:1,finger:1}], muted:[5,6]},
+    {name:"Am7",   dots:[{s:4,f:2,finger:2},{s:2,f:1,finger:1}], muted:[6]},
+    {name:"Dm7",   dots:[{s:3,f:2,finger:2},{s:2,f:1,finger:1},{s:1,f:1,finger:1}], muted:[5,6]},
+    {name:"Em7",   dots:[{s:5,f:2,finger:2}]},
+  ]},
+  { title:"Sus2 / Sus4 / Add9", chords:[
+    {name:"Dsus2", dots:[{s:3,f:2,finger:1},{s:2,f:3,finger:3}], muted:[5,6]},
+    {name:"Dsus4", dots:[{s:3,f:2,finger:1},{s:2,f:3,finger:2},{s:1,f:3,finger:3}], muted:[5,6]},
+    {name:"Asus2", dots:[{s:4,f:2,finger:1},{s:3,f:2,finger:2}], muted:[6]},
+    {name:"Asus4", dots:[{s:4,f:2,finger:1},{s:3,f:2,finger:2},{s:2,f:3,finger:3}], muted:[6]},
+    {name:"Cadd9", dots:[{s:5,f:3,finger:2},{s:4,f:2,finger:1},{s:2,f:3,finger:3},{s:1,f:3,finger:4}], muted:[6]},
+  ]},
+  { title:"Pestanas Móveis (Forma de E e A)", chords:[
+    {name:"F (forma E)",  baseFret:1, barre:{fret:1, fromString:1, toString:6}, dots:[{s:5,f:3,finger:3},{s:4,f:3,finger:4},{s:3,f:2,finger:2}]},
+    {name:"Bb (forma A)", baseFret:1, barre:{fret:1, fromString:1, toString:5}, dots:[{s:4,f:3,finger:3},{s:3,f:3,finger:3},{s:2,f:3,finger:3}], muted:[6]},
+    {name:"Bm (forma Am)", baseFret:2, barre:{fret:1, fromString:1, toString:5}, dots:[{s:4,f:3,finger:3},{s:3,f:4,finger:4},{s:2,f:2,finger:2}], muted:[6]},
+  ]},
+  { title:"Power Chords (5)", chords:[
+    {name:"E5",  dots:[{s:5,f:2,finger:1},{s:4,f:2,finger:2}], muted:[1,2,3]},
+    {name:"A5",  dots:[{s:4,f:2,finger:1},{s:3,f:2,finger:2}], muted:[1,2,6]},
+    {name:"D5",  dots:[{s:3,f:2,finger:1},{s:2,f:3,finger:2}], muted:[1,5,6]},
+  ]}
+];
+
+// ============ RENDER: SONGS ============
+const songsTbody = document.querySelector('#songs-table tbody');
+let songIndex = 0;
+songs.forEach(s => {
+  const tr = document.createElement('tr');
+  if (s.section) {
+    tr.className = 'section';
+    tr.innerHTML = `<td colspan="5">${s.section}</td>`;
+  } else {
+    const idx = songIndex++;
+    tr.innerHTML = `
+      <td class="day">${s.d}</td>
+      <td class="song-name">${s.n}</td>
+      <td class="artist">${s.a}</td>
+      <td><span class="chords hidden-blur">${s.c}</span></td>
+      <td class="actions"><input type="checkbox" class="check" data-idx="${idx}"></td>`;
+  }
+  songsTbody.appendChild(tr);
+});
+
+const songChecks = document.querySelectorAll('#songs-table .check');
+const songChords = document.querySelectorAll('#songs-table .chords');
+const KS_DONE = 'pratica-violao-songs-done';
+const KS_SHOW = 'pratica-violao-songs-show';
+
+const songsDone = JSON.parse(localStorage.getItem(KS_DONE) || '[]');
+songChecks.forEach(cb => {
+  const i = +cb.dataset.idx;
+  if (songsDone.includes(i)) { cb.checked = true; cb.closest('tr').classList.add('done'); }
+  cb.addEventListener('change', () => {
+    cb.closest('tr').classList.toggle('done', cb.checked);
+    saveSongs(); updateSongsProgress();
+  });
+});
+function saveSongs() {
+  const arr = [];
+  songChecks.forEach(cb => { if (cb.checked) arr.push(+cb.dataset.idx); });
+  localStorage.setItem(KS_DONE, JSON.stringify(arr));
+}
+function updateSongsProgress() {
+  const total = songChecks.length;
+  const n = [...songChecks].filter(c => c.checked).length;
+  document.getElementById('progress-songs').textContent = `${n} / ${total} concluídas` + (n === total ? ' 🎉' : '');
+}
+updateSongsProgress();
+
+songChords.forEach(c => c.addEventListener('click', () => c.classList.toggle('hidden-blur')));
+
+let songsShown = localStorage.getItem(KS_SHOW) === '1';
+const toggleSongsBtn = document.getElementById('toggle-songs');
+function applySongsShow() {
+  songChords.forEach(c => { if (songsShown) c.classList.remove('hidden-blur'); else c.classList.add('hidden-blur'); });
+  toggleSongsBtn.textContent = songsShown ? '🙈 Esconder todos os acordes' : '👁️ Mostrar todos os acordes';
+}
+applySongsShow();
+toggleSongsBtn.addEventListener('click', () => {
+  songsShown = !songsShown;
+  localStorage.setItem(KS_SHOW, songsShown ? '1' : '0');
+  applySongsShow();
+});
+document.getElementById('reset-songs').addEventListener('click', () => {
+  if (!confirm('Resetar progresso das músicas?')) return;
+  localStorage.removeItem(KS_DONE);
+  songChecks.forEach(cb => { cb.checked = false; cb.closest('tr').classList.remove('done'); });
+  updateSongsProgress();
+});
+
+// ============ RENDER: RIFFS ============
+const riffsGrid = document.getElementById('riffs-grid');
+riffs.forEach(r => {
+  const stars = '⭐'.repeat(r.diff) + '☆'.repeat(3 - r.diff);
+  const card = document.createElement('div');
+  card.className = 'item-card';
+  card.innerHTML = `
+    <div class="item-head">
+      <span class="item-title">${r.t}</span>
+      <span class="item-meta">${r.a} · <span class="difficulty">${stars}</span></span>
+    </div>
+    <pre class="tab-spoiler hidden-blur">${r.tab}</pre>`;
+  riffsGrid.appendChild(card);
+});
+const riffSpoilers = document.querySelectorAll('#riffs-grid .tab-spoiler');
+riffSpoilers.forEach(s => s.addEventListener('click', () => s.classList.toggle('hidden-blur')));
+
+const KR_SHOW = 'pratica-violao-riffs-show';
+let riffsShown = localStorage.getItem(KR_SHOW) === '1';
+const toggleRiffsBtn = document.getElementById('toggle-riffs');
+function applyRiffsShow() {
+  riffSpoilers.forEach(s => { if (riffsShown) s.classList.remove('hidden-blur'); else s.classList.add('hidden-blur'); });
+  toggleRiffsBtn.textContent = riffsShown ? '🙈 Esconder todos os tabs' : '👁️ Mostrar todos os tabs';
+}
+applyRiffsShow();
+toggleRiffsBtn.addEventListener('click', () => {
+  riffsShown = !riffsShown;
+  localStorage.setItem(KR_SHOW, riffsShown ? '1' : '0');
+  applyRiffsShow();
+});
+
+// ============ RENDER: EXERCISES ============
+const exercisesGrid = document.getElementById('exercises-grid');
+exercises.forEach(e => {
+  const stars = '⭐'.repeat(e.diff) + '☆'.repeat(3 - e.diff);
+  const card = document.createElement('div');
+  card.className = 'item-card';
+  card.innerHTML = `
+    <div class="item-head">
+      <span class="item-title">${e.t}</span>
+      <span class="item-meta">${e.cat} · <span class="difficulty">${stars}</span></span>
+    </div>
+    <div style="color:var(--text); font-size:0.92rem; margin:6px 0;">${e.desc}</div>
+    <pre class="tab-spoiler" style="filter:none;">${e.tab}</pre>
+    <div class="tip">💡 ${e.tip}</div>`;
+  exercisesGrid.appendChild(card);
+});
+
+// ============ RENDER: SCALES (FRETBOARD SVG) ============
+function fretboardSVG(scale) {
+  const cellW = 56, cellH = 32, padX = 38, padY = 26;
+  const [startFret, endFret] = scale.fretRange;
+  const numFrets = endFret - startFret + 1;
+  const w = padX*2 + cellW * numFrets;
+  const h = padY*2 + cellH * 5 + 20;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" class="fretboard-svg" preserveAspectRatio="xMidYMid meet">`;
+  // Strings (6 horizontal lines)
+  for (let i = 0; i < 6; i++) {
+    const y = padY + i * cellH;
+    const sw = 1 + i * 0.2;
+    svg += `<line x1="${padX}" y1="${y}" x2="${w - padX}" y2="${y}" stroke="#aaa" stroke-width="${sw}"/>`;
+  }
+  // Frets (vertical lines)
+  for (let i = 0; i <= numFrets; i++) {
+    const x = padX + i * cellW;
+    const isNut = (i === 0 && startFret === 0);
+    svg += `<line x1="${x}" y1="${padY}" x2="${x}" y2="${padY + 5*cellH}" stroke="${isNut ? '#eee' : '#888'}" stroke-width="${isNut ? 5 : 1.5}"/>`;
+  }
+  // Inlays
+  const inlays = [3,5,7,9,15,17,19,21];
+  inlays.forEach(f => {
+    if (f >= startFret && f <= endFret) {
+      const fretIdx = f - startFret;
+      const x = padX + (fretIdx + 0.5) * cellW;
+      svg += `<circle cx="${x}" cy="${padY + 2.5*cellH}" r="3.5" fill="#3a3f4d"/>`;
+    }
+  });
+  if (12 >= startFret && 12 <= endFret) {
+    const x = padX + (12 - startFret + 0.5) * cellW;
+    svg += `<circle cx="${x}" cy="${padY + 1.5*cellH}" r="3.5" fill="#3a3f4d"/>`;
+    svg += `<circle cx="${x}" cy="${padY + 3.5*cellH}" r="3.5" fill="#3a3f4d"/>`;
+  }
+  // String labels
+  const strNames = ['e','B','G','D','A','E'];
+  for (let i = 0; i < 6; i++) {
+    svg += `<text x="${padX - 14}" y="${padY + i*cellH + 4}" text-anchor="end" font-size="11" fill="#8a92a3" font-family="monospace">${strNames[i]}</text>`;
+  }
+  // Notes — FIXED: dot placed at center of cell (between fret lines), not on them
+  scale.dots.forEach(d => {
+    let cx;
+    if (d.f === 0) {
+      // Open string: place to the LEFT of the nut
+      cx = padX - 18;
+    } else {
+      cx = padX + (d.f - startFret + 0.5) * cellW;
+    }
+    const cy = padY + (d.s - 1) * cellH;
+    let fill = '#3ddc84';
+    if (d.root) fill = '#ffb454';
+    if (d.blue) fill = '#ff7a8a';
+    const stroke = (d.f === 0) ? '#fff' : 'none';
+    const strokeW = (d.f === 0) ? 2 : 0;
+    svg += `<circle cx="${cx}" cy="${cy}" r="11" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
+    if (d.root) {
+      svg += `<text x="${cx}" y="${cy + 3.5}" text-anchor="middle" font-size="11" font-weight="bold" fill="#0f1115">R</text>`;
+    }
+  });
+  // Fret numbers (centered in each cell, below)
+  for (let i = 0; i < numFrets; i++) {
+    const fNum = startFret + i;
+    if (fNum === 0) continue;
+    const x = padX + (i + 0.5) * cellW;
+    svg += `<text x="${x}" y="${padY + 5*cellH + 16}" text-anchor="middle" font-size="11" fill="#8a92a3">${fNum}</text>`;
+  }
+  svg += '</svg>';
+  return svg;
+}
+
+const scalesContainer = document.getElementById('scales-container');
+scales.forEach(sc => {
+  const card = document.createElement('div');
+  card.className = 'scale-card';
+  card.innerHTML = `<h3>${sc.title}</h3><div class="desc">${sc.desc}</div>${fretboardSVG(sc)}`;
+  scalesContainer.appendChild(card);
+});
+const modesCard = document.createElement('div');
+modesCard.className = 'scale-card';
+modesCard.innerHTML = `<h3>Modos Gregos — Visão Geral</h3><div class="desc">Os 7 modos da escala maior. Cada um tem um "sabor".</div>${modesText}`;
+scalesContainer.appendChild(modesCard);
+
+// ============ RENDER: CHORD DIAGRAMS ============
+function chordSVG(chord) {
+  const {name, dots, muted = [], baseFret = 1, barre} = chord;
+  const cellW = 24, cellH = 22, padX = 18, padTop = 26, padBot = 22;
+  const numFrets = 5;
+  const w = padX*2 + cellW * 5;
+  const h = padTop + cellH * numFrets + padBot;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" class="chord-svg">`;
+  // Strings (6 vertical lines): low E (s=6) on left, high E (s=1) on right
+  for (let i = 0; i < 6; i++) {
+    const x = padX + i * cellW;
+    svg += `<line x1="${x}" y1="${padTop}" x2="${x}" y2="${padTop + numFrets*cellH}" stroke="#aaa" stroke-width="1.3"/>`;
+  }
+  // Frets (horizontal lines)
+  for (let i = 0; i <= numFrets; i++) {
+    const y = padTop + i * cellH;
+    const isNut = (i === 0 && baseFret === 1);
+    svg += `<line x1="${padX}" y1="${y}" x2="${padX + 5*cellW}" y2="${y}" stroke="${isNut ? '#eee' : '#888'}" stroke-width="${isNut ? 4 : 1.3}"/>`;
+  }
+  // Base fret label (when not 1)
+  if (baseFret > 1) {
+    svg += `<text x="${padX - 6}" y="${padTop + cellH/2 + 4}" text-anchor="end" font-size="10" fill="#8a92a3">${baseFret}fr</text>`;
+  }
+  // String state above (X muted, O open)
+  const stringsWithDots = new Set(dots.map(d => d.s));
+  if (barre) {
+    for (let s = barre.fromString; s <= barre.toString; s++) stringsWithDots.add(s);
+  }
+  for (let s = 1; s <= 6; s++) {
+    const x = padX + (6 - s) * cellW;
+    if (muted.includes(s)) {
+      svg += `<text x="${x}" y="${padTop - 8}" text-anchor="middle" font-size="13" fill="#888">×</text>`;
+    } else if (!stringsWithDots.has(s)) {
+      svg += `<circle cx="${x}" cy="${padTop - 10}" r="4" fill="none" stroke="#aaa" stroke-width="1.4"/>`;
+    }
+  }
+  // Barre
+  if (barre) {
+    const x1 = padX + (6 - barre.toString) * cellW;
+    const x2 = padX + (6 - barre.fromString) * cellW;
+    const y = padTop + (barre.fret - 0.5) * cellH;
+    svg += `<rect x="${x1 - 8}" y="${y - 8}" width="${x2 - x1 + 16}" height="16" rx="8" fill="#ffb454" opacity="0.85"/>`;
+  }
+  // Finger dots — positioned in CELL CENTER (between fret lines)
+  dots.forEach(d => {
+    const x = padX + (6 - d.s) * cellW;
+    const y = padTop + (d.f - 0.5) * cellH;
+    svg += `<circle cx="${x}" cy="${y}" r="9" fill="#ffb454" stroke="#0f1115" stroke-width="1"/>`;
+    if (d.finger) {
+      svg += `<text x="${x}" y="${y + 3.5}" text-anchor="middle" font-size="10" font-weight="bold" fill="#0f1115">${d.finger}</text>`;
+    }
+  });
+  // Title
+  svg += `<text x="${w/2}" y="${h - 4}" text-anchor="middle" font-size="14" font-weight="bold" fill="#ffb454">${name}</text>`;
+  svg += '</svg>';
+  return svg;
+}
+
+const chordsContainer = document.getElementById('chords-container');
+chordCategories.forEach(cat => {
+  const section = document.createElement('div');
+  section.className = 'chord-section';
+  section.innerHTML = `<h3>${cat.title}</h3><div class="chord-grid"></div>`;
+  const grid = section.querySelector('.chord-grid');
+  cat.chords.forEach(ch => {
+    const box = document.createElement('div');
+    box.className = 'chord-box';
+    box.innerHTML = chordSVG(ch);
+    grid.appendChild(box);
+  });
+  chordsContainer.appendChild(section);
+});
+
+// ============ TABS ============
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    localStorage.setItem('pratica-violao-tab', btn.dataset.tab);
+  });
+});
+const savedTab = localStorage.getItem('pratica-violao-tab');
+if (savedTab) {
+  const btn = document.querySelector(`.tab-btn[data-tab="${savedTab}"]`);
+  if (btn) btn.click();
+}
+</script>
+</body>
+</html>
