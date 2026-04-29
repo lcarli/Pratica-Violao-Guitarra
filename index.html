@@ -90,6 +90,17 @@
 
   .tip-box { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 14px 18px; border-radius: 8px; margin-top: 16px; }
   .tip-box h3 { margin: 0 0 8px; }
+
+  /* CAGED */
+  .caged-shapes { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 12px 0; }
+  .caged-shape { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
+  .caged-shape h4 { margin: 0 0 4px; color: var(--accent); }
+  .caged-shape .root-label { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+  .caged-week { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent-2); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; }
+  .caged-week h4 { margin: 0 0 6px; color: var(--accent-2); }
+  .caged-week ul { margin: 6px 0 0 18px; padding: 0; }
+  .caged-week ul li { margin: 3px 0; }
+  .caged-flow { font-family: ui-monospace, "Cascadia Mono", Menlo, monospace; background:#0f1115; border:1px solid var(--border); border-radius:6px; padding:10px 14px; margin: 8px 0; font-size: 1.05rem; color: var(--accent); letter-spacing: 2px; text-align:center; }
 </style>
 </head>
 <body>
@@ -105,6 +116,7 @@
   <button class="tab-btn" data-tab="exercises">🎯 Exercícios</button>
   <button class="tab-btn" data-tab="scales">🎼 Escalas</button>
   <button class="tab-btn" data-tab="chords">📖 Acordes</button>
+  <button class="tab-btn" data-tab="caged">🅒 CAGED</button>
   <button class="tab-btn" data-tab="routine">📅 Rotina</button>
 </nav>
 
@@ -154,15 +166,102 @@
   <div id="chords-container"></div>
 </section>
 
+<section class="tab-content" id="tab-caged">
+  <h2>Sistema CAGED</h2>
+  <p class="sub">A "chave-mestra" do braço da guitarra. Entenda <strong>uma vez</strong> e nunca mais fique perdido depois da 5ª casa.</p>
+
+  <div class="tip-box">
+    <h3>💡 O que é CAGED?</h3>
+    <p>CAGED é um acrônimo das 5 formas de acorde maior abertos: <strong>C, A, G, E, D</strong>. A grande sacada é que <strong>essas 5 formas, quando "movidas" pelo braço (com pestana), geram QUALQUER acorde maior em 5 posições diferentes</strong>. Elas se conectam: o final de uma forma é o começo da próxima.</p>
+    <p>Ou seja: se você sabe a forma de C aberto, você sabe tocar D, E, F, G… (formas movidas) — só precisa saber <em>onde</em> colocá-las. O CAGED te dá esse mapa.</p>
+  </div>
+
+  <h3>As 5 formas abertas</h3>
+  <p class="sub">Memorize visualmente. O ponto vermelho marca a <strong>tônica</strong> (a nota que dá nome ao acorde).</p>
+  <div class="caged-shapes" id="caged-open"></div>
+
+  <h3>Como elas se conectam no braço</h3>
+  <p>Subindo o braço, as 5 formas aparecem <strong>nesta ordem fixa</strong>, em ciclo:</p>
+  <div class="caged-flow">C → A → G → E → D → (C uma oitava acima)</div>
+  <p>Isso vale para QUALQUER acorde maior. Cada forma compartilha pelo menos uma nota com a próxima — é como peças de Lego que se encaixam.</p>
+
+  <h3>Exemplo: <span style="color:var(--accent)">G maior</span> nas 5 posições</h3>
+  <p class="sub">Mesmo acorde (G) tocado de 5 jeitos diferentes ao longo do braço. Toque cada um e ouça: o som muda de "cor" mas a função é a mesma.</p>
+  <div class="caged-shapes" id="caged-g-positions"></div>
+
+  <div class="tip-box">
+    <h3>🔑 As regras de ouro</h3>
+    <ul>
+      <li><strong>Tônica primeiro.</strong> Antes de tocar a forma, identifique <em>onde está a tônica</em>. Sem isso, você só decora — não entende.</li>
+      <li><strong>Cada forma tem uma tônica "âncora"</strong>: C/A/D na corda A (5ª); E na corda E grave (6ª); G na corda E grave (6ª) e G (3ª).</li>
+      <li><strong>Forma G e forma C</strong> são as mais difíceis de tocar movidas (esticam muito). Comece por <strong>E, A e D</strong>.</li>
+      <li><strong>Menores</strong>: o sistema funciona igual com Cm, Am, Em formas (Gm e Dm são raros como pestana).</li>
+      <li>O CAGED é a base para conectar <strong>escalas pentatônicas e modos</strong> ao acorde de fundo. Cada forma de acorde tem uma "caixa" de pentatônica em volta dela.</li>
+    </ul>
+  </div>
+
+  <h3>Plano de estudo — 4 semanas</h3>
+
+  <div class="caged-week">
+    <h4>Semana 1 — Decorar as formas e tônicas</h4>
+    <ul>
+      <li>Toque cada uma das 5 formas abertas (C, A, G, E, D) — 2 min cada, todo dia.</li>
+      <li>Em cada forma, <strong>aponte a tônica com o olhar</strong> antes de tocar. Fale o nome da nota em voz alta.</li>
+      <li>Aprenda as notas da corda E grave (6ª) e A (5ª) até a 12ª casa. Sem isso, CAGED não funciona.</li>
+      <li><strong>Exercício final da semana</strong>: feche os olhos, alguém fala "C" → você toca a forma C aberta em 2 segundos.</li>
+    </ul>
+  </div>
+
+  <div class="caged-week">
+    <h4>Semana 2 — Mover as formas E e A (as mais úteis)</h4>
+    <ul>
+      <li>Forma E movida (pestana): toque <strong>F, G, A, B, C</strong> usando essa forma. Tônica na corda 6.</li>
+      <li>Forma A movida (pestana): toque <strong>B, C, D, E, F</strong> usando essa forma. Tônica na corda 5.</li>
+      <li>Pratique a troca <strong>F (forma E, casa 1) → Bb (forma A, casa 1)</strong> — mesma casa, formas diferentes.</li>
+      <li><strong>Exercício final</strong>: toque a progressão <em>G → C → D</em> usando APENAS forma E e forma A (sem acordes abertos).</li>
+    </ul>
+  </div>
+
+  <div class="caged-week">
+    <h4>Semana 3 — Adicionar formas D, C e G</h4>
+    <ul>
+      <li>Forma D movida: pequena, ágil, ótima para acordes "altos". Tônica na corda 4 (D).</li>
+      <li>Forma C movida: difícil de pegar inteira — comece tocando só as 4 cordas mais agudas (versão "triade").</li>
+      <li>Forma G movida: muito esticada — pratique a versão simplificada de 3 cordas.</li>
+      <li><strong>Exercício final</strong>: toque <strong>G maior</strong> nas 5 posições do braço, em sequência, sem parar (use os diagramas acima).</li>
+    </ul>
+  </div>
+
+  <div class="caged-week">
+    <h4>Semana 4 — Improvisar conectando o braço</h4>
+    <ul>
+      <li>Escolha um acorde (ex: A maior). Encontre as 5 formas dele subindo o braço.</li>
+      <li>Use um backing track de A maior. Improvise dentro de UMA forma por vez (8 compassos cada), depois conecte.</li>
+      <li>Aprenda a "caixa" da pentatônica em volta de cada forma de acorde. Ex: pentatônica de A maior em volta da forma E movida (casa 5).</li>
+      <li><strong>Exercício final</strong>: grave-se tocando uma frase melódica que <em>atravessa as 5 caixas</em> sem parar.</li>
+    </ul>
+  </div>
+
+  <div class="tip-box">
+    <h3>🎯 Como saber que você "fechou" o CAGED</h3>
+    <ol>
+      <li>Você consegue tocar qualquer acorde maior em 5 lugares diferentes do braço, sem pensar.</li>
+      <li>Você sabe a tônica de cada forma sem olhar.</li>
+      <li>Improvisando num acorde, você sente o braço como <em>5 quartos conectados</em>, não 12 casas isoladas.</li>
+    </ol>
+  </div>
+</section>
+
 <section class="tab-content" id="tab-routine">
   <h2>Rotina Diária Sugerida</h2>
-  <p class="sub">Total: ~50 minutos. Ajuste conforme seu tempo.</p>
+  <p class="sub">Total: ~55 minutos. Ajuste conforme seu tempo.</p>
   <div class="routine-grid">
     <div class="routine-item"><span class="time">5 min</span><h4>1. Aquecimento</h4>Aba "Exercícios" → cromática 1-2-3-4 nas 6 cordas. Foco em <em>relaxar a mão</em> e tocar limpo.</div>
     <div class="routine-item"><span class="time">10 min</span><h4>2. Escala do dia</h4>Aba "Escalas". 1 escala de cada vez. Subindo e descendo com metrônomo. Comece a 60 BPM e suba 5 BPM por dia.</div>
     <div class="routine-item"><span class="time">20 min</span><h4>3. Música do dia (de ouvido)</h4>Aba "90 Músicas". Ouça 3x sem instrumento. Ache a tônica. Teste I-V-vi-IV. Só revele os acordes no fim para conferir.</div>
     <div class="routine-item"><span class="time">10 min</span><h4>4. Riff / Solo</h4>Aba "Riffs". Repita até sair limpo, sem olhar o tab.</div>
-    <div class="routine-item"><span class="time">5 min</span><h4>5. Improviso livre</h4>Procure no YouTube "<em>backing track Am blues</em>" ou "<em>E minor pentatonic backing</em>". Improvise com a pentatônica menor. Erre à vontade.</div>
+    <div class="routine-item"><span class="time">5 min</span><h4>5. CAGED do dia</h4>Aba "CAGED". Pegue UM acorde maior (ex: G) e toque-o em 2 das 5 posições do braço, falando a tônica em voz alta. Siga o plano de 4 semanas.</div>
+    <div class="routine-item"><span class="time">5 min</span><h4>6. Improviso livre</h4>Procure no YouTube "<em>backing track Am blues</em>" ou "<em>E minor pentatonic backing</em>". Improvise com a pentatônica menor. Erre à vontade.</div>
     <div class="routine-item" style="border-left-color:var(--accent-2)"><span class="time">Bônus semanal</span><h4>Sábado/Domingo</h4>Grave em vídeo uma das músicas que você "fechou" na semana. Assista depois — você vai notar coisas que sua orelha não pegou tocando.</div>
   </div>
 
@@ -916,7 +1015,9 @@ scalesContainer.appendChild(modesCard);
 
 // ============ RENDER: CHORD DIAGRAMS ============
 function chordSVG(chord) {
-  const {name, dots, muted = [], baseFret = 1, barre} = chord;
+  const {name, dots, muted = [], baseFret = 1, barre, roots = []} = chord;
+  const isRoot = (s, f) => roots.some(r => r.s === s && r.f === f);
+  const ROOT_FILL = '#ff5577';
   const cellW = 24, cellH = 22, padX = 18, padTop = 26, padBot = 22;
   const numFrets = 5;
   const w = padX*2 + cellW * 5;
@@ -947,7 +1048,8 @@ function chordSVG(chord) {
     if (muted.includes(s)) {
       svg += `<text x="${x}" y="${padTop - 8}" text-anchor="middle" font-size="13" fill="#888">×</text>`;
     } else if (!stringsWithDots.has(s)) {
-      svg += `<circle cx="${x}" cy="${padTop - 10}" r="4" fill="none" stroke="#aaa" stroke-width="1.4"/>`;
+      const openRoot = isRoot(s, 0);
+      svg += `<circle cx="${x}" cy="${padTop - 10}" r="4" fill="${openRoot ? ROOT_FILL : 'none'}" stroke="${openRoot ? ROOT_FILL : '#aaa'}" stroke-width="1.4"/>`;
     }
   }
   // Barre
@@ -956,12 +1058,20 @@ function chordSVG(chord) {
     const x2 = padX + (6 - barre.fromString) * cellW;
     const y = padTop + (barre.fret - 0.5) * cellH;
     svg += `<rect x="${x1 - 8}" y="${y - 8}" width="${x2 - x1 + 16}" height="16" rx="8" fill="#ffb454" opacity="0.85"/>`;
+    // Mark barre roots
+    for (let s = barre.fromString; s <= barre.toString; s++) {
+      if (isRoot(s, barre.fret)) {
+        const cx = padX + (6 - s) * cellW;
+        svg += `<circle cx="${cx}" cy="${y}" r="7" fill="${ROOT_FILL}" stroke="#0f1115" stroke-width="1.5"/>`;
+      }
+    }
   }
   // Finger dots — positioned in CELL CENTER (between fret lines)
   dots.forEach(d => {
     const x = padX + (6 - d.s) * cellW;
     const y = padTop + (d.f - 0.5) * cellH;
-    svg += `<circle cx="${x}" cy="${y}" r="9" fill="#ffb454" stroke="#0f1115" stroke-width="1"/>`;
+    const fill = isRoot(d.s, d.f) ? ROOT_FILL : '#ffb454';
+    svg += `<circle cx="${x}" cy="${y}" r="9" fill="${fill}" stroke="#0f1115" stroke-width="1"/>`;
     if (d.finger) {
       svg += `<text x="${x}" y="${y + 3.5}" text-anchor="middle" font-size="10" font-weight="bold" fill="#0f1115">${d.finger}</text>`;
     }
@@ -986,6 +1096,36 @@ chordCategories.forEach(cat => {
   });
   chordsContainer.appendChild(section);
 });
+
+// ============ CAGED ============
+const cagedOpenShapes = [
+  {name:"Forma C", roots:[{s:5,f:3},{s:2,f:1}], dots:[{s:5,f:3,finger:3},{s:4,f:2,finger:2},{s:2,f:1,finger:1}], muted:[6], desc:"Tônica na corda 5"},
+  {name:"Forma A", roots:[{s:5,f:0},{s:2,f:2}], dots:[{s:4,f:2,finger:1},{s:3,f:2,finger:2},{s:2,f:2,finger:3}], muted:[6], desc:"Tônica na corda 5 (solta)"},
+  {name:"Forma G", roots:[{s:6,f:3},{s:3,f:0},{s:1,f:3}], dots:[{s:6,f:3,finger:2},{s:5,f:2,finger:1},{s:1,f:3,finger:3}], desc:"Tônica nas cordas 6 e 1"},
+  {name:"Forma E", roots:[{s:6,f:0},{s:4,f:2},{s:1,f:0}], dots:[{s:5,f:2,finger:2},{s:4,f:2,finger:3},{s:3,f:1,finger:1}], desc:"Tônica na corda 6 (solta)"},
+  {name:"Forma D", roots:[{s:4,f:0},{s:2,f:3}], dots:[{s:3,f:2,finger:1},{s:1,f:2,finger:2},{s:2,f:3,finger:3}], muted:[6,5], desc:"Tônica na corda 4 (solta)"},
+];
+
+const cagedG = [
+  {name:"G — forma G (aberta)", roots:[{s:6,f:3},{s:3,f:0},{s:1,f:3}], dots:[{s:6,f:3,finger:2},{s:5,f:2,finger:1},{s:1,f:3,finger:3}], desc:"Casa 0-3"},
+  {name:"G — forma E (pestana)", baseFret:3, roots:[{s:6,f:1},{s:4,f:3},{s:1,f:1}], barre:{fret:1, fromString:1, toString:6}, dots:[{s:5,f:3,finger:3},{s:4,f:3,finger:4},{s:3,f:2,finger:2}], desc:"Casa 3-7"},
+  {name:"G — forma D", baseFret:5, roots:[{s:4,f:1}], dots:[{s:4,f:1,finger:1},{s:3,f:3,finger:2},{s:2,f:4,finger:4},{s:1,f:3,finger:3}], muted:[6,5], desc:"Casa 5-8"},
+  {name:"G — forma C", baseFret:7, roots:[{s:5,f:4},{s:2,f:2}], dots:[{s:5,f:4,finger:4},{s:4,f:3,finger:3},{s:3,f:1,finger:1},{s:2,f:2,finger:2},{s:1,f:1,finger:1}], muted:[6], desc:"Casa 7-10"},
+  {name:"G — forma A (pestana)", baseFret:10, roots:[{s:5,f:1}], barre:{fret:1, fromString:1, toString:5}, dots:[{s:4,f:3,finger:3},{s:3,f:3,finger:3},{s:2,f:3,finger:3}], muted:[6], desc:"Casa 10-12"},
+];
+
+function renderCagedShapes(containerId, shapes) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  shapes.forEach(sh => {
+    const box = document.createElement('div');
+    box.className = 'caged-shape';
+    box.innerHTML = chordSVG(sh) + (sh.desc ? `<div class="root-label">${sh.desc}</div>` : '');
+    container.appendChild(box);
+  });
+}
+renderCagedShapes('caged-open', cagedOpenShapes);
+renderCagedShapes('caged-g-positions', cagedG);
 
 // ============ TABS ============
 document.querySelectorAll('.tab-btn').forEach(btn => {
