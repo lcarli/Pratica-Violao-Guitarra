@@ -48,6 +48,46 @@
   .actions { width: 60px; text-align: center; }
   .check { accent-color: var(--done); width: 18px; height: 18px; cursor: pointer; }
 
+  /* Metronome */
+  .metronome {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; margin-bottom: 16px;
+    position: sticky; top: 8px; z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  }
+  .metronome-row { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+  .metronome-title { font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+  .metronome .bpm-display {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: 1.8rem; font-weight: 700; color: var(--accent);
+    min-width: 70px; text-align: center;
+  }
+  .metronome input[type="range"] { flex: 1; min-width: 160px; accent-color: var(--accent); }
+  .metronome .met-field { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.85rem; }
+  .metronome select, .metronome input[type="number"] {
+    background: #0f1115; color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 5px 8px; font-size: 0.88rem;
+  }
+  .metronome input[type="number"] { width: 64px; }
+  .metronome .bpm-btn {
+    background: #0f1115; border: 1px solid var(--border); color: var(--text);
+    width: 32px; height: 32px; padding: 0; border-radius: 6px; font-weight: 700;
+  }
+  .metronome .beats { display: flex; gap: 6px; }
+  .metronome .beat {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #0f1115; border: 1px solid var(--border);
+    transition: transform 0.08s, background 0.08s;
+  }
+  .metronome .beat.active { background: var(--accent); transform: scale(1.35); }
+  .metronome .beat.accent { border-color: var(--accent-2); }
+  .metronome .beat.accent.active { background: var(--accent-2); }
+  .metronome .play-btn {
+    background: var(--accent); color: #1a1d24; border-color: var(--accent);
+    font-weight: 700; min-width: 90px;
+  }
+  .metronome .play-btn.playing { background: var(--rose); border-color: var(--rose); color: #1a1d24; }
+
   /* Cards (riffs / exercises) */
   .card-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
   @media (min-width: 900px) { .card-grid { grid-template-columns: 1fr 1fr; } }
@@ -146,6 +186,47 @@
 <section class="tab-content" id="tab-exercises">
   <h2>Exercícios Técnicos</h2>
   <p class="sub">Drills para construir mecânica e expressão. Comece devagar com metrônomo (60 BPM) e aumente 5 BPM por dia. <strong>Qualidade &gt; velocidade.</strong></p>
+
+  <div class="metronome" id="metronome">
+    <div class="metronome-row" style="margin-bottom:10px;">
+      <div class="metronome-title">🎼 Metrônomo</div>
+      <div class="beats" id="met-beats"></div>
+      <button class="play-btn" id="met-play" type="button">▶ Iniciar</button>
+    </div>
+    <div class="metronome-row" style="margin-bottom:10px;">
+      <button class="bpm-btn" id="met-minus" type="button" title="-1 BPM">−</button>
+      <div class="bpm-display"><span id="met-bpm-val">60</span> <span style="font-size:0.7rem;color:var(--muted);">BPM</span></div>
+      <button class="bpm-btn" id="met-plus" type="button" title="+1 BPM">+</button>
+      <input type="range" id="met-bpm" min="30" max="240" value="60" step="1" aria-label="BPM">
+    </div>
+    <div class="metronome-row">
+      <label class="met-field">Compasso:
+        <select id="met-sig">
+          <option value="2">2/4</option>
+          <option value="3">3/4</option>
+          <option value="4" selected>4/4</option>
+          <option value="6">6/8</option>
+          <option value="5">5/4</option>
+          <option value="7">7/8</option>
+        </select>
+      </label>
+      <label class="met-field">Subdivisão:
+        <select id="met-sub">
+          <option value="1" selected>Semínimas</option>
+          <option value="2">Colcheias</option>
+          <option value="3">Tercinas</option>
+          <option value="4">Semicolcheias</option>
+        </select>
+      </label>
+      <label class="met-field">Volume:
+        <input type="range" id="met-vol" min="0" max="100" value="60" step="1" style="min-width:80px;">
+      </label>
+      <label class="met-field" title="Tap aqui no ritmo desejado">
+        <button id="met-tap" type="button">👆 Tap</button>
+      </label>
+    </div>
+  </div>
+
   <div class="card-grid" id="exercises-grid"></div>
 </section>
 
@@ -1142,6 +1223,159 @@ if (savedTab) {
   const btn = document.querySelector(`.tab-btn[data-tab="${savedTab}"]`);
   if (btn) btn.click();
 }
+
+// ============ METRÔNOMO ============
+(function metronome() {
+  const KEY = 'pratica-violao-metronome';
+  const $ = id => document.getElementById(id);
+  const bpmInput = $('met-bpm'), bpmVal = $('met-bpm-val');
+  const sigSel = $('met-sig'), subSel = $('met-sub'), volInput = $('met-vol');
+  const playBtn = $('met-play'), beatsEl = $('met-beats');
+  const minusBtn = $('met-minus'), plusBtn = $('met-plus'), tapBtn = $('met-tap');
+
+  const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+  let bpm = saved.bpm || 60;
+  let beatsPerBar = saved.sig || 4;
+  let subdivision = saved.sub || 1;
+  let volume = saved.vol != null ? saved.vol : 60;
+
+  bpmInput.value = bpm; bpmVal.textContent = bpm;
+  sigSel.value = beatsPerBar; subSel.value = subdivision; volInput.value = volume;
+
+  let audioCtx = null, isPlaying = false;
+  let nextNoteTime = 0, currentBeat = 0, currentSubStep = 0;
+  let schedulerId = null;
+  const lookahead = 25;        // ms
+  const scheduleAhead = 0.1;   // s
+
+  function save() {
+    localStorage.setItem(KEY, JSON.stringify({bpm, sig: beatsPerBar, sub: subdivision, vol: volume}));
+  }
+
+  function renderBeats() {
+    beatsEl.innerHTML = '';
+    for (let i = 0; i < beatsPerBar; i++) {
+      const d = document.createElement('div');
+      d.className = 'beat' + (i === 0 ? ' accent' : '');
+      beatsEl.appendChild(d);
+    }
+  }
+  renderBeats();
+
+  function flashBeat(beatIdx) {
+    const dots = beatsEl.children;
+    for (let i = 0; i < dots.length; i++) dots[i].classList.remove('active');
+    if (dots[beatIdx]) {
+      dots[beatIdx].classList.add('active');
+      setTimeout(() => dots[beatIdx] && dots[beatIdx].classList.remove('active'), 120);
+    }
+  }
+
+  function playClick(time, isDownbeat, isMainBeat) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.frequency.value = isDownbeat ? 1500 : (isMainBeat ? 1000 : 700);
+    const v = (volume / 100) * (isMainBeat ? 1 : 0.45);
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(v, time + 0.001);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(time);
+    osc.stop(time + 0.06);
+  }
+
+  function nextNote() {
+    const secondsPerBeat = 60.0 / bpm;
+    nextNoteTime += secondsPerBeat / subdivision;
+    currentSubStep++;
+    if (currentSubStep >= subdivision) {
+      currentSubStep = 0;
+      currentBeat = (currentBeat + 1) % beatsPerBar;
+    }
+  }
+
+  function scheduler() {
+    while (nextNoteTime < audioCtx.currentTime + scheduleAhead) {
+      const isMainBeat = currentSubStep === 0;
+      const isDownbeat = isMainBeat && currentBeat === 0;
+      playClick(nextNoteTime, isDownbeat, isMainBeat);
+      if (isMainBeat) {
+        const beatToFlash = currentBeat;
+        const delay = Math.max(0, (nextNoteTime - audioCtx.currentTime) * 1000);
+        setTimeout(() => { if (isPlaying) flashBeat(beatToFlash); }, delay);
+      }
+      nextNote();
+    }
+  }
+
+  function start() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    isPlaying = true;
+    currentBeat = 0; currentSubStep = 0;
+    nextNoteTime = audioCtx.currentTime + 0.05;
+    schedulerId = setInterval(scheduler, lookahead);
+    playBtn.textContent = '⏸ Parar';
+    playBtn.classList.add('playing');
+  }
+
+  function stop() {
+    isPlaying = false;
+    if (schedulerId) { clearInterval(schedulerId); schedulerId = null; }
+    [...beatsEl.children].forEach(d => d.classList.remove('active'));
+    playBtn.textContent = '▶ Iniciar';
+    playBtn.classList.remove('playing');
+  }
+
+  playBtn.addEventListener('click', () => isPlaying ? stop() : start());
+
+  function setBpm(v) {
+    bpm = Math.max(30, Math.min(240, Math.round(v)));
+    bpmInput.value = bpm; bpmVal.textContent = bpm;
+    save();
+  }
+  bpmInput.addEventListener('input', () => setBpm(+bpmInput.value));
+  minusBtn.addEventListener('click', () => setBpm(bpm - 1));
+  plusBtn.addEventListener('click', () => setBpm(bpm + 1));
+
+  sigSel.addEventListener('change', () => {
+    beatsPerBar = +sigSel.value;
+    renderBeats();
+    currentBeat = 0; currentSubStep = 0;
+    save();
+  });
+  subSel.addEventListener('change', () => {
+    subdivision = +subSel.value;
+    currentSubStep = 0;
+    save();
+  });
+  volInput.addEventListener('input', () => { volume = +volInput.value; save(); });
+
+  // Tap tempo
+  let tapTimes = [];
+  tapBtn.addEventListener('click', () => {
+    const now = performance.now();
+    tapTimes = tapTimes.filter(t => now - t < 2500);
+    tapTimes.push(now);
+    if (tapTimes.length >= 2) {
+      const diffs = [];
+      for (let i = 1; i < tapTimes.length; i++) diffs.push(tapTimes[i] - tapTimes[i-1]);
+      const avg = diffs.reduce((a,b) => a+b, 0) / diffs.length;
+      setBpm(60000 / avg);
+    }
+  });
+
+  // Keyboard: space to toggle when exercises tab visible
+  document.addEventListener('keydown', (e) => {
+    if (e.code !== 'Space') return;
+    const tab = document.getElementById('tab-exercises');
+    if (!tab || !tab.classList.contains('active')) return;
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+    e.preventDefault();
+    isPlaying ? stop() : start();
+  });
+})();
 </script>
 </body>
 </html>
